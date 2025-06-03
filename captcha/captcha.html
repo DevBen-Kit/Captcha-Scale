@@ -5,6 +5,10 @@
   <title>Joel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="js/main.js" defer="defer"></script>
+  <script src="js/config.js"></script>
+  <script src="js/sentences.js"></script>
   <style type="text/css">
     html,
     body {
@@ -12,6 +16,7 @@
       margin: 0;
       padding: 0;
       font-family: sans-serif;
+      overflow: hidden;
     }
 
     #captcha-container {
@@ -20,33 +25,225 @@
       height: 300px;
     }
 
-    /* Your style here... */
+    #div_text {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    #div_buttons {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    
+    #img_scale_arm {
+      transform-origin: 190px 125px;
+      transform: rotate(0deg);
+      transition: transform 2s cubic-bezier(0, 0, 0.3, 1.2);
+    }
+
+    #img_scale_bowl_left {
+      offset-path: path('m 0, 0 a 5,5 0 1,0 510,0 a 5,5 0 1,0 -510,0Z');
+      offset-distance: 0%;
+      offset-rotate: 0deg;
+      transition: offset-distance 2s cubic-bezier(0, 0, 0.3, 1.2);
+    }
+
+    #img_scale_bowl_right {
+      offset-path: path('m 0, 0 a 5,5 0 1,0 -510,0 a 5,5 0 1,0 510,0Z');
+      offset-distance: 0%;
+      offset-rotate: 0deg;
+      transition: offset-distance 2s cubic-bezier(0, 0, 0.3, 1.2);
+    }
+
+    #div_balls {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+
+    #span_balls_text {
+      position: absolute;
+      top: 7px;
+      left: -250px;
+      font-weight: bold;
+    }
+
+    #span_balls_text_a {
+      position: absolute;
+      top: -8px;
+      right: 146px;
+      font-weight: bold;
+      color: #a00;
+    }
+
+    #div_drag {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+      #div_drag.dragProcess {
+        pointer-events: all;
+        cursor: none;
+      }
+
+      #div_drag svg {
+        position: absolute;
+        pointer-events: none;
+      }
+
+    #div_speech {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .div_speech_bubble {
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 5px;
+      background: wheat;
+      border: 5px solid #333;
+      border-radius: 10px;
+      opacity: 0;
+      user-select: none;
+      animation: fading 10s infinite;
+    }
+
+    .div_speech_bubble:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      border: 30px solid transparent;
+      left: 50%;
+    }
+
+    .div_speech_bubble.bubble_top:after {
+      bottom: 0;
+      left: 50%;
+      border-bottom: 0;
+      margin-left: -15px;
+      margin-bottom: -30px;
+      border-top-color: #333;
+    }
+
+    .div_speech_bubble.bubble_bottom:after {
+      top: 0;
+      border-top: 0;
+      margin-left: -15px;
+      margin-top: -30px;
+      border-bottom-color: #333;
+    }
+
+    .div_speech_bubble.bubble_right:after {
+      border-right: 0;
+      margin-left: 30%;
+    }
+
+    .div_speech_bubble.bubble_left:after {
+      border-left: 0;
+      margin-left: -30%;
+    }
+
+    .btn {
+      padding: 5px;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      background: white;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: #aaa;
+    }
+
+    @keyframes fading {
+        0% {
+            opacity: 0
+        }
+
+        20% {
+            opacity: 1
+        }
+
+        80% {
+            opacity: .8
+        }
+
+        100% {
+            opacity: 0
+        }
+    }
   </style>
 </head>
 
 <body>
   <div id="captcha-container">
-    <!-- Add your CAPTCHA here: -->
-    Hello world!
-
-    <!-- We've added a sample button. Feel free to remove it: -->
-    <button id="solve">
-      Solve!
-    </button>
+    <div id="div_text">
+      <span id="span_text">
+        <span class="text_to_balls">Bring</span>
+        <span class="text_to_balls">balance</span>
+        <span class="text_to_balls">to</span>
+        <span class="text_to_balls">the</span>
+        <span class="text_to_balls">world</span>!
+      </span>
+    </div>
+    <div id="div_scale">
+      <svg height="300" width="390" viewBox="0 -50 400 660">
+        <image href="images/Scale.png"></image>
+        <image id="img_scale_arm" href="images/Scale-arm.png" x="-80" y="100"></image>
+        <g id="img_scale_bowl_right">
+          <svg x="247" y="103">
+            <g id="bowl_right_balls"></g>
+            <path id="path_right_balls_1" d="m60,130 a 30,5 0 1,0 280,0" stroke="none" fill="none"></path>
+            <path id="path_right_balls_2" d="m90,100 a 20,5 0 1,0 220,0" stroke="none" fill="none"></path>
+            <path id="path_right_balls_3" d="m120,80 a 20,5 0 1,0 160,0" stroke="none" fill="none"></path>
+            <image href="images/Scale-bowl.png"></image>
+          </svg>
+        </g>
+        <g id="img_scale_bowl_left">
+          <svg x="-263" y="103">
+            <g id="bowl_left_balls"></g>
+            <path id="path_left_balls_1" d="m60,130 a 30,5 0 1,0 280,0" stroke="none" fill="none"></path>
+            <path id="path_left_balls_2" d="m90,100 a 20,5 0 1,0 220,0" stroke="none" fill="none"></path>
+            <path id="path_left_balls_3" d="m120,80 a 20,5 0 1,0 160,0" stroke="none" fill="none"></path>
+            <image href="images/Scale-bowl.png"></image>
+          </svg>
+        </g>
+      </svg>
+    </div>
+    <div id="div_buttons">
+      <button type="button" id="btn_clear" class="btn">Reset</button>
+    </div>
+    <div id="div_balls">
+      <div id="div_ball_text">
+        <span id="span_balls_text">Take these big beautiful b<s style="text-decoration-color: #a00">i</s>lls &#8594;</span>
+        <span id="span_balls_text_a">a</span>
+      </div>
+      <svg id="div_ball_list" viewbox="0 -25 0 50" height="30">
+        <defs id="def_ball_gradient"></defs>
+      </svg>
+    </div>
+    <div id="div_drag"></div>
+    <div id="div_speech"></div>
+    <div style="display: none;">
+      <svg>
+        <defs>
+          <radialGradient id="template_gradient" cx="25%" cy="25%" spreadMethod="reflect">
+            <stop class="stop_1" offset="0%" stop-color="red" />
+            <stop class="stop_2" offset="100%" stop-color="blue" />
+          </radialGradient>
+        </defs>
+        <polygon id="template_triangle" points="100,10 150,190 50,190"></polygon>
+      </svg>
+      <path id="template_ball" d="a 5,5 0 1,0 50,0 a 5,5 0 1,0 -50,0Z" fill="#000"></path>
+    </div>
   </div>
-
-  <script type="text/javascript">
-    (function(window, document){
-      // This is how you tell the parent window that the CAPTCHA was successful.
-      function captchaSuccess() {
-        window.top.postMessage("success", '*');
-      }
-
-      // Your CAPTCHA code goes here, we've added a simple example below:
-      document.getElementById('solve')
-           .addEventListener('click', () => captchaSuccess());
-
-    })(window, document);
-  </script>
 </body>
 </html>
