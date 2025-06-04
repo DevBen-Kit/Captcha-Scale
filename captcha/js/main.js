@@ -325,8 +325,8 @@
                 Drop: function(event) {
                     var svg = $(event.target).find("svg").get(0);
                     var path = $(event.target).find("path").get(0);
-                    var imgBowlLeft = $("#img_scale_bowl_left").get(0);
-                    var imgBowlRight = $("#img_scale_bowl_right").get(0);
+                    var imgBowlLeft = $("#img_bowl_left").get(0);
+                    var imgBowlRight = $("#img_bowl_right").get(0);
                     var groupLeft = $("#bowl_left_balls");
                     var groupRight = $("#bowl_right_balls");
                     var configIndex = path.getAttribute("config-index");
