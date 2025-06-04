@@ -294,8 +294,8 @@
                     clone.get(0).setAttributeNS(null, 'd', `M0,25 ` + ball.attr("d"));
                     svg.setAttributeNS(null, 'viewBox', `0 0 50 50`);
                     svg.setAttributeNS(null, 'height', `30`);
-                    svg.style.top = posY - 25;
-                    svg.style.left = posX - 25;
+                    svg.style.top = posY - 25 + "px";
+                    svg.style.left = posX - 25 + "px";
 
                     $(svg).append(clone);
                     $("#div_drag").addClass("dragProcess").append(svg);
@@ -317,8 +317,8 @@
                         console.log({posX, posY});
 
                         if (svg) {
-                            svg.style.top = posY - 25;
-                            svg.style.left = posX - 25;
+                            svg.style.top = posY - 25 + "px";
+                            svg.style.left = posX - 25 + "px";
                         }
                     }
                 },
